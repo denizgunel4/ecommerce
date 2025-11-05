@@ -54,7 +54,12 @@ class ProductVariantController extends Controller
         $token = $this->apiTokenService->getToken();
         $apiUrl = 'https://demotestt.hipotenus.net/extended/api/v1/json/AddVaryantToProduct';
 
-        $response = Http::withToken($token)->post($apiUrl, $variant->toApiArray());
+        $payload = array_merge($productvariant->toApiArray(), [
+            'token' => $token,
+        ]);
+
+        $response = Http::post($apiUrl, $payload);
+
 
         if ($response->failed()) {
             return response()->json([
@@ -77,7 +82,13 @@ class ProductVariantController extends Controller
         $token = $this->apiTokenService->getToken();
         $apiUrl = 'https://demotestt.hipotenus.net/extended/api/v1/json/AddVaryantToProduct';
 
-        $response = Http::withToken($token)->post($apiUrl, $variant->toApiArray());
+        $payload = array_merge($productvariant->toApiArray(), [
+            'ProductID' => $productvariant->product_id,
+            'VariantID' => $productvariant->variant_id,
+            'token' => $token,
+        ]);
+
+        $response = Http::post($apiUrl, $payload);
 
         if ($response->failed()) {
             return response()->json([
@@ -98,9 +109,13 @@ class ProductVariantController extends Controller
         $token = $this->apiTokenService->getToken();
         $apiUrl = 'https://demotestt.hipotenus.net/extended/api/v1/json/DeleteVaryant';
 
-        $response = Http::withToken($token)->post($apiUrl, [
-            'ID' => $variant->id,
-        ]);
+        $payload = [
+            'ProductID' => $productvariant->product_id,
+            'VariantID' => $productvariant->variant_id,
+            'token' => $token,
+        ];
+
+        $response = Http::post($apiUrl, $payload);
 
         if ($response->failed()) {
             return response()->json([

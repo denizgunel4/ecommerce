@@ -40,7 +40,11 @@ class BrandController extends Controller
         $token = $this->apiTokenService->getToken();
         $apiUrl = 'https://demotestt.hipotenus.net/extended/api/v1/json/AddBrand';
 
-        $response = Http::withToken($token)->post($apiUrl, $brand->toApiArray());
+        $payload = array_merge($brand->toApiArray(), [
+            'token' => $token,
+        ]);
+
+        $response = Http::post($apiUrl, $payload);
 
         if ($response->failed()) {
             return response()->json([
@@ -63,7 +67,12 @@ class BrandController extends Controller
         $token = $this->apiTokenService->getToken();
         $apiUrl = 'https://demotestt.hipotenus.net/extended/api/v1/json/EditBrand';
 
-        $response = Http::withToken($token)->post($apiUrl, $brand->toApiArray() + ['ID' => $brand->id]);
+        $payload = array_merge($brand->toApiArray(), [
+            'ID' => $brand->id,
+            'token' => $token,
+        ]);
+
+        $response = Http::post($apiUrl, $payload);
 
         if ($response->failed()) {
             return response()->json([
@@ -84,11 +93,14 @@ class BrandController extends Controller
         $token = $this->apiTokenService->getToken();
         $apiUrl = 'https://demotestt.hipotenus.net/extended/api/v1/json/DeleteBrand';
 
-        $response = Http::withToken($token)->post($apiUrl, [
+        $payload = [
             'ID' => $brand->id,
             'BrandIntCode' => $brand->brand_int_code,
-        ]);
+            'token' => $token,
+        ];
 
+        $response = Http::post($apiUrl, $payload);
+        
         if ($response->failed()) {
             return response()->json([
                 'error' => 'Failed to delete brand in API',

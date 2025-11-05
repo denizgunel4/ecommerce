@@ -41,7 +41,11 @@ class CategoryController extends Controller
         $token = $this->apiTokenService->getToken();
         $apiUrl = 'https://demotestt.hipotenus.net/extended/api/v1/json/AddCategory';
 
-        $response = Http::withToken($token)->post($apiUrl, $category->toApiArray());
+        $payload = array_merge($category->toApiArray(), [
+            'token' => $token,
+        ]);
+
+        $response = Http::post($apiUrl, $payload);
 
         if ($response->failed()) {
             return response()->json([
@@ -64,7 +68,12 @@ class CategoryController extends Controller
         $token = $this->apiTokenService->getToken();
         $apiUrl = 'https://demotestt.hipotenus.net/extended/api/v1/json/EditCategory';
 
-        $response = Http::withToken($token)->post($apiUrl, $category->toApiArray() + ['ID' => $category->id]);
+        $payload = array_merge($category->toApiArray(), [
+            'ID' => $category->id,
+            'token' => $token,
+        ]);
+
+        $response = Http::post($apiUrl, $payload);
 
         if ($response->failed()) {
             return response()->json([
@@ -85,10 +94,13 @@ class CategoryController extends Controller
         $token = $this->apiTokenService->getToken();
         $apiUrl = 'https://demotestt.hipotenus.net/extended/api/v1/json/DeleteCategory';
 
-        $response = Http::withToken($token)->post($apiUrl, [
+        $payload = [
             'ID' => $category->id,
             'CategoryIntCode' => $category->category_int_code,
-        ]);
+            'token' => $token,
+        ];
+
+        $response = Http::post($apiUrl, $payload);
 
         if ($response->failed()) {
             return response()->json([

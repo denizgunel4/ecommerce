@@ -38,7 +38,12 @@ class CustomerController extends Controller
         $token = $this->apiTokenService->getToken();
         $apiUrl = 'https://demotestt.hipotenus.net/extended/api/v1/json/AddCustomer';
 
-        $response = Http::withToken($token)->post($apiUrl, $customer->toApiArray());
+        $payload = array_merge($customer->toApiArray(), [
+            'token' => $token,
+        ]);
+
+        $response = Http::post($apiUrl, $payload);
+
 
         if ($response->failed()) {
             return response()->json([
@@ -61,7 +66,12 @@ class CustomerController extends Controller
         $token = $this->apiTokenService->getToken();
         $apiUrl = 'https://demotestt.hipotenus.net/extended/api/v1/json/EditCustomer';
 
-        $response = Http::withToken($token)->post($apiUrl, $customer->toApiArray() + ['ID' => $customer->id]);
+        $payload = array_merge($customer->toApiArray(), [
+            'ID' => $customer->id,
+            'token' => $token,
+        ]);
+
+        $response = Http::post($apiUrl, $payload);
 
         if ($response->failed()) {
             return response()->json([
@@ -82,10 +92,13 @@ class CustomerController extends Controller
         $token = $this->apiTokenService->getToken();
         $apiUrl = 'https://demotestt.hipotenus.net/extended/api/v1/json/DeleteCustomer';
 
-        $response = Http::withToken($token)->post($apiUrl, [
+        $payload = [
             'ID' => $customer->id,
             'CustomerIntCode' => $customer->customer_int_code,
-        ]);
+            'token' => $token,
+        ];
+
+        $response = Http::post($apiUrl, $payload);
 
         if ($response->failed()) {
             return response()->json([

@@ -36,8 +36,9 @@ class ProductController extends Controller
         $token = $this->apiTokenService->getToken();
         $apiUrl = 'https://demotestt.hipotenus.net/extended/api/v1/json/AddProduct';
 
-        // Token should be sent as part of the JSON body
-        $payload = array_merge(['token' => $token], $product->toArray());
+        $payload = array_merge($product->toApiArray(), [
+            'token' => $token,
+        ]);
 
         $response = Http::post($apiUrl, $payload);
 
@@ -62,7 +63,10 @@ class ProductController extends Controller
         $token = $this->apiTokenService->getToken();
         $apiUrl = 'https://demotestt.hipotenus.net/extended/api/v1/json/UpdateProduct';
 
-        $payload = array_merge(['token' => $token], $product->toArray());
+        $payload = array_merge($product->toApiArray(), [
+            'ID' => $product->id,
+            'token' => $token,
+        ]);
 
         $response = Http::post($apiUrl, $payload);
 
@@ -85,10 +89,13 @@ class ProductController extends Controller
         $token = $this->apiTokenService->getToken();
         $apiUrl = 'https://demotestt.hipotenus.net/extended/api/v1/json/DeleteProduct';
 
-        $response = Http::post($apiUrl, [
-            'token' => $token,
+        $payload = [
+            'ID' => $product->id,
             'ProductCode' => $product->product_code,
-        ]);
+            'token' => $token,
+        ];
+
+        $response = Http::post($apiUrl, $payload);
 
         if ($response->failed()) {
             return response()->json([
